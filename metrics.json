@@ -1,0 +1,13 @@
+{
+  "is_placeholder": false,
+  "accuracy": 0.90,
+  "precision": 0.93,
+  "recall": 0.93,
+  "specificity": 0.80,
+  "f1": 0.93,
+  "auc": 0.92,
+  "tn": 4,
+  "fp": 1,
+  "fn": 1,
+  "tp": 14
+}

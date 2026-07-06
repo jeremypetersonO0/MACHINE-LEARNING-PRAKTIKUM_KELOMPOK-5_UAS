@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAINT · Voice Biomarker Screening</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="grain"></div>
+
+<div class="landing-wrap">
+
+  <div class="landing-nav">
+    <span class="brand-mark">SAINT</span>
+    <span class="nav-pill glass">model aktif</span>
+  </div>
+
+  <div class="landing-hero">
+    <div class="hero-wave-wrap">
+      <svg class="hero-wave" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+        <path class="wave-path wave-1" d="M0,60 Q30,10 60,60 T120,60 Q150,100 180,60 T240,60 Q270,20 300,60 T360,60 Q390,95 420,60 T480,60 Q510,15 540,60 T600,60 Q630,98 660,60 T720,60 Q750,18 780,60 T840,60 Q870,96 900,60 T960,60 T1000,60" />
+        <path class="wave-path wave-2" d="M0,60 Q40,35 80,60 T160,60 Q200,80 240,60 T320,60 Q360,40 400,60 T480,60 Q520,82 560,60 T640,60 Q680,38 720,60 T800,60 Q840,80 880,60 T960,60 T1000,60" />
+      </svg>
+    </div>
+
+    <div class="eyebrow">Skrining berbasis self-attention transformer</div>
+    <h1 class="hero-title">Suara menyimpan<br>jejak <em>Parkinson</em></h1>
+    <p class="hero-body">
+      Jauh sebelum tremor terlihat, getaran halus di pita suara sudah berubah.
+      SAINT membaca <strong>21 biomarker akustik</strong> — jitter, shimmer,
+      noise-to-harmonic ratio — dan mengubahnya jadi satu perkiraan yang bisa
+      dibaca dalam hitungan detik.
+    </p>
+
+    <a href="{{ url_for('app_page') }}" class="cta-button">
+      <span>Ayo Cek Sekarang</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+
+    <div class="hero-footnote">Alat bantu skrining edukatif — bukan pengganti diagnosis medis.</div>
+  </div>
+
+  <div class="landing-strip">
+    <div class="strip-item glass">
+      <div class="strip-num">21</div>
+      <div class="strip-label">fitur akustik MDVP</div>
+    </div>
+    <div class="strip-item glass">
+      <div class="strip-num">6×</div>
+      <div class="strip-label">lapis self-attention</div>
+    </div>
+    <div class="strip-item glass">
+      <div class="strip-num">SAINT</div>
+      <div class="strip-label">arsitektur transformer tabular</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAINT · Dashboard Screening</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="mesh-bg">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="grain"></div>
+
+<header class="app-header">
+  <a href="{{ url_for('landing') }}" class="brand-link">
+    <span class="brand-mark">SAINT</span>
+    <span class="brand-tag">voice biomarker screening</span>
+  </a>
+  <div class="header-meta">MODEL&nbsp;SAINT · UCI Parkinson's Voice Dataset</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn" data-tab-btn="tentang" onclick="showTab('tentang')">01 · Tentang</button>
+  <button class="tab-btn" data-tab-btn="akurasi" onclick="showTab('akurasi')">02 · Akurasi Model</button>
+  <button class="tab-btn" data-tab-btn="cek" onclick="showTab('cek')">03 · Cek Sekarang</button>
+</nav>
+
+<main class="app-main">
+
+  <!-- ============ TAB 1: TENTANG ============ -->
+  <section id="tentang" class="tab-panel">
+    <div class="panel-grid">
+      <div class="panel-col panel-card glass">
+        <h2 class="panel-title">Apa itu Parkinson?</h2>
+        <p class="panel-text">
+          Parkinson adalah gangguan sistem saraf yang menyerang bagian otak pengatur gerakan.
+          Salah satu tanda paling awal — sering muncul jauh sebelum tremor atau kekakuan otot
+          terlihat — adalah perubahan halus pada suara: nada yang bergetar tidak stabil,
+          volume yang melemah, dan kualitas suara yang berubah pelan-pelan tanpa disadari
+          penderitanya sendiri.
+        </p>
+        <p class="panel-text">
+          Perubahan ini terlalu halus untuk didengar telinga manusia, tapi bisa diukur secara
+          presisi lewat analisis sinyal akustik seperti <strong>jitter</strong> (variasi frekuensi
+          antar getaran suara), <strong>shimmer</strong> (variasi amplitudo), dan
+          <strong>noise-to-harmonic ratio</strong> (rasio suara "bersih" vs "berisik").
+        </p>
+      </div>
+
+      <div class="panel-col panel-card glass">
+        <h2 class="panel-title">Apa itu SAINT?</h2>
+        <p class="panel-text">
+          <strong>SAINT</strong> (Self-Attention and Intersample Attention Transformer) adalah
+          arsitektur deep learning yang awalnya dirancang untuk data tabular — seperti data
+          pengukuran suara di sini. Alih-alih memproses tiap baris data sendiri-sendiri, SAINT
+          memakai mekanisme <em>attention</em> untuk melihat hubungan antar-fitur dalam satu
+          baris, sekaligus hubungan antar-baris data yang berbeda.
+        </p>
+        <p class="panel-text">
+          Model ini membaca 21 fitur akustik sekaligus, lalu setiap fitur "berdiskusi" satu sama
+          lain lewat lapisan self-attention sebelum akhirnya menghasilkan satu kesimpulan:
+          probabilitas indikasi Parkinson berdasarkan pola suara yang diberikan.
+        </p>
+      </div>
+    </div>
+
+    <div class="flow-strip glass">
+      <div class="flow-step"><span class="flow-num">1</span>Rekaman suara diukur</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-num">2</span>21 fitur akustik diekstrak</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-num">3</span>SAINT membaca pola antar-fitur</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><span class="flow-num">4</span>Probabilitas indikasi keluar</div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: AKURASI ============ -->
+  <section id="akurasi" class="tab-panel">
+    <h2 class="panel-title">Performa Model pada Data Uji</h2>
+    <p class="panel-text panel-text-narrow">
+      Angka berikut diukur dari data uji (test set) yang belum pernah dilihat model selama
+      training — jadi merepresentasikan estimasi performa di data baru.
+    </p>
+
+    <div class="metric-grid">
+      {% for m in metrics.items_list %}
+      <div class="metric-card glass">
+        <div class="metric-label">{{ m.label }}</div>
+        <div class="metric-ring" style="--pct: {{ m.pct }};">
+          <div class="metric-ring-inner">{{ m.value }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="cm-block glass">
+      <h3 class="cm-title">Confusion Matrix</h3>
+      <div class="cm-grid">
+        <div class="cm-cell cm-corner"></div>
+        <div class="cm-cell cm-head">Prediksi: Sehat</div>
+        <div class="cm-cell cm-head">Prediksi: Parkinson</div>
+
+        <div class="cm-cell cm-head">Aktual: Sehat</div>
+        <div class="cm-cell cm-value cm-good">{{ metrics.tn }}</div>
+        <div class="cm-cell cm-value cm-bad">{{ metrics.fp }}</div>
+
+        <div class="cm-cell cm-head">Aktual: Parkinson</div>
+        <div class="cm-cell cm-value cm-bad">{{ metrics.fn }}</div>
+        <div class="cm-cell cm-value cm-good">{{ metrics.tp }}</div>
+      </div>
+    </div>
+
+    {% if metrics.is_placeholder %}
+    <div class="notice-box glass">
+      ⚠️ Ini masih angka contoh. Ganti dengan hasil evaluasi asli kamu di file
+      <code>metrics.json</code> (angka <code>test_acc</code>, <code>test_prec</code>, dst dari
+      output <code>SAINT.py</code> bagian "REKAP METRIK EVALUASI").
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- ============ TAB 3: CEK SEKARANG ============ -->
+  <section id="cek" class="tab-panel">
+    <h2 class="panel-title">Masukkan 21 Pengukuran Suara</h2>
+    <p class="panel-text panel-text-narrow">
+      Isi nilai fitur akustik hasil analisis rekaman suara. Semua kolom wajib diisi.
+    </p>
+
+    {% if error %}
+    <div class="error-box">GALAT — {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('predict') }}">
+      <div class="field-list">
+        {% for f in field_info %}
+        <div class="field-row glass">
+          <div class="field-desc">
+            <div class="field-name">{{ f.name }}</div>
+            <div class="field-explain">{{ f.desc }}</div>
+            {% if f.range %}<div class="field-range">Nilai wajar: {{ f.range }}</div>{% endif %}
+          </div>
+          <div class="field-input-wrap">
+            <input type="number" step="any" id="f_{{ loop.index }}" name="{{ f.name }}"
+                   value="{{ request.form.get(f.name, '') }}" required>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="run">Jalankan Analisis</button>
+        <span class="hint">— hasil muncul di bawah setelah dikirim</span>
+      </div>
+    </form>
+
+    {% if result %}
+    <div class="result glass {{ 'parkinson' if result.label == 'Parkinson' else 'healthy' }}">
+      <div>
+        <div class="result-label">Hasil Klasifikasi</div>
+        <div class="result-value">{{ result.label }}</div>
+      </div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-name">Parkinson</span>
+          <span class="bar-track"><span class="bar-fill" style="width: {{ result.prob_parkinson }}%; background: var(--alert);"></span></span>
+          <span class="bar-pct">{{ result.prob_parkinson }}%</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-name">Sehat</span>
+          <span class="bar-track"><span class="bar-fill" style="width: {{ result.prob_healthy }}%; background: var(--signal);"></span></span>
+          <span class="bar-pct">{{ result.prob_healthy }}%</span>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="disclaimer">Alat bantu skrining, bukan pengganti diagnosis klinis. Hasil harus dikonfirmasi oleh tenaga medis profesional.</div>
+  </section>
+
+</main>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelector(`[data-tab-btn="${id}"]`).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  showTab("{{ active_tab }}");
+</script>
+
+</body>
+</html>
